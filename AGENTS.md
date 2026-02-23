@@ -113,6 +113,21 @@ Follow Obsidian's **Developer Policies** and **Plugin Guidelines**. In particula
 - Avoid deceptive patterns, ads, or spammy notifications.
 - Register and clean up all DOM, app, and interval listeners using the provided `register*` helpers so the plugin unloads safely.
 
+## Publication hygiene
+
+- Treat docs, tests, examples, and comments as public artifacts.
+- Never include personal file paths, vault names, usernames, machine names, or internal folder structures in committed files.
+- Use neutral placeholders in examples:
+  - `/path/to/vilot`
+  - `/path/to/your-vault/.obsidian/plugins/<plugin-id>/`
+  - `@Project Notes/` (instead of real vault folders)
+- Keep operational/internal runbooks out of public docs unless they are intentionally part of user-facing documentation.
+- Keep CI runner choice intentional: prefer public defaults unless self-hosted infrastructure details are meant to be public.
+- Before publishing, run a quick tracked-files scan:
+  - `git ls-files -z | xargs -0 rg -n "/Users/|/home/|\\.obsidian/plugins|[A-Z]:\\\\Users\\\\"`
+  - `git ls-files -z | xargs -0 rg -n "(ghp_|gho_|github_pat_|sk-|AKIA|-----BEGIN [A-Z ]+PRIVATE KEY-----)"`
+- If sensitive content is committed, rewrite history before publishing and force-push with lease.
+
 ## UX & copy guidelines (for UI text, commands, settings)
 
 - Prefer sentence case for headings, buttons, and titles.
