@@ -45,12 +45,23 @@ An Obsidian community plugin that integrates **actual GitHub Copilot** (the prod
 
 ## 🔍 Competitive Landscape
 
+### Existing "GitHub Copilot" Plugin (Pierrad/obsidian-github-copilot) ⚠️
+- **Already in the community plugins directory** — 416 stars, 173 commits
+- Plugin ID: `github-copilot` (taken)
+- **Architecture: Copilot LSP** (Language Server Protocol via `@pierrad/ts-lsp-client`)
+- Same approach as VS Code's Copilot extension — editor completions protocol
+- Features: inline suggestions + basic chat
+- Requires Node.js 22+ binary path
+- React-based chat UI (react-markdown, zustand)
+- **Does NOT use the Copilot SDK** — no agent runtime, no custom tools, no vault awareness
+- **Our differentiator:** SDK-powered agent with vault tools vs LSP-powered autocomplete
+
 ### Existing "Obsidian Copilot" (logancyang/obsidian-copilot)
 - **NOT GitHub Copilot** — just named "Copilot"
 - Generic LLM chat plugin supporting OpenAI, Anthropic, Google, Azure, local models
-- Features: chat with notes, RAG, `@` context mentions, custom prompts
+- Features: chat with notes, RAG via embeddings, `@` context mentions, custom prompts
 - Very popular (has its own website: obsidiancopilot.com)
-- **Our differentiator:** Actual GitHub Copilot with its agent runtime, not just an LLM wrapper
+- **Our differentiator:** Agent with tool use vs RAG pipeline. Free with GitHub account vs BYOK.
 
 ### Smart Connections
 - AI-powered note discovery and connections
@@ -68,7 +79,7 @@ An Obsidian community plugin that integrates **actual GitHub Copilot** (the prod
 - Doesn't use GitHub Copilot specifically
 
 ### Key Gap We Fill
-**No existing Obsidian plugin uses the official GitHub Copilot SDK.** All current AI plugins require users to bring their own API keys (OpenAI, Anthropic, etc.). Our plugin lets anyone with a GitHub Copilot subscription (including free tier) use AI in Obsidian with zero additional setup.
+**No existing Obsidian plugin uses the Copilot SDK's agent runtime with custom vault tools.** The existing GitHub Copilot plugin does LSP-based completions. Other AI plugins are BYOK wrappers. None give the agent autonomous access to search, read, and modify vault notes via tools. That's our lane.
 
 ---
 
@@ -186,6 +197,51 @@ const response = await session.chat({
 - Free tier: limited usage
 - Need to show usage/quota info in plugin
 - BYOK mode avoids this entirely
+
+---
+
+## 🔎 Vault Search Strategy
+
+### The Question
+How does the agent search across potentially thousands of notes to find relevant context?
+
+### Approach: Three Layers (No Embeddings Required for MVP)
+
+**Layer 1 — Agent Tool Use (MVP)**
+The Copilot SDK supports custom tools. We register vault-aware tools and let the agent autonomously decide what to search and read — the same pattern Copilot CLI uses to navigate codebases without pre-embedding anything.
+
+Tools we expose:
+| Tool | What it does | Obsidian API |
+|------|-------------|--------------|
+| `search_vault` | Full-text keyword search | `app.vault.search()` / `MetadataCache` |
+| `read_note` | Read a specific note | `app.vault.cachedRead(file)` |
+| `list_notes` | List notes by folder/tag | `app.vault.getMarkdownFiles()` |
+| `get_note_metadata` | Frontmatter, tags, links | `app.metadataCache.getFileCache(file)` |
+| `get_backlinks` | Notes linking to a given note | `app.metadataCache.resolvedLinks` |
+
+Agent flow: search → pick promising notes → read them → reason → answer. Iterates if needed.
+
+**Layer 2 — Obsidian Search API (v0.2)**
+Obsidian's built-in search supports operators, tags, properties, regex. Exposing this gives the agent a more powerful retrieval tool. Users can also manually `@`-mention notes for explicit context.
+
+**Layer 3 — Local Embeddings (v0.3+, optional)**
+For large vaults (1000+ notes) where semantic similarity matters:
+- `transformers.js` for in-process embedding (no external dependencies)
+- Vectors stored locally in plugin data dir
+- Incremental re-indexing via `vault.on('modify')` events
+- Exposed as `semantic_search` tool alongside keyword tools
+- **Opt-in via settings** — not required
+
+### Why Not Embeddings from Day 1?
+- Adds complexity (indexing, storage, model download)
+- Agent tool use is sufficient for most vaults (sub-1000 notes)
+- Keeps MVP simple and dependency-light
+- Matches how Copilot CLI actually works (no pre-embedding of codebases)
+
+### Reference: How Competitors Handle This
+- **Obsidian Copilot (logancyang):** Uses embeddings + vector store for vault-wide RAG
+- **Smart Connections:** Embeddings-first approach, focused on note discovery
+- **VS Code Copilot:** File system tools + workspace search, no pre-embedding
 
 ---
 

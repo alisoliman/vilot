@@ -18,5 +18,9 @@ main.js
 # obsidian
 data.json
 
+# docs build artifacts
+docs/.vitepress/dist
+docs/.vitepress/cache
+
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store

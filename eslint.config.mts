@@ -12,8 +12,11 @@ export default tseslint.config(
 			parserOptions: {
 				projectService: {
 					allowDefaultProject: [
+						'eslint.config.mts',
 						'eslint.config.js',
-						'manifest.json'
+						'manifest.json',
+						'docs/.vitepress/config.ts',
+						'vitest.config.ts',
 					]
 				},
 				tsconfigRootDir: import.meta.dirname,
@@ -25,6 +28,8 @@ export default tseslint.config(
 	globalIgnores([
 		"node_modules",
 		"dist",
+		"docs/.vitepress/dist",
+		"docs/.vitepress/cache",
 		"esbuild.config.mjs",
 		"eslint.config.js",
 		"version-bump.mjs",

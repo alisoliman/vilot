@@ -1,8 +1,1063 @@
-/*
+/* ─────────────────────────────────────────────────
+   Vilot — "Quiet Intelligence"
+   Editorial restraint · Confident negative space
+   One accent · Alive when thinking
+   ───────────────────────────────────────────────── */
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.vilot-hidden { display: none !important; }
 
-If your plugin does not need CSS, delete this file.
+/* ── Chat Panel ───────────────────────────────── */
 
-*/
+.vilot-chat-container {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+}
+
+/* Header — ultra-thin, information-dense */
+
+.vilot-chat-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 14px;
+	border-bottom: 1px solid var(--background-modifier-border);
+	flex-shrink: 0;
+	gap: 8px;
+}
+
+.vilot-chat-context {
+	font-size: 11px;
+	color: var(--text-faint);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	flex: 1;
+	min-width: 0;
+	letter-spacing: 0.01em;
+}
+
+.vilot-chat-header-actions {
+	display: flex;
+	gap: 6px;
+	flex-shrink: 0;
+	align-items: center;
+}
+
+.vilot-model-select {
+	font-size: 11px;
+	color: var(--text-faint);
+	background: transparent;
+	border: none;
+	border-bottom: 1px solid transparent;
+	padding: 1px 2px;
+	cursor: pointer;
+	max-width: 130px;
+	transition: border-color 0.3s ease, color 0.2s ease;
+	-webkit-appearance: none;
+	appearance: none;
+}
+.vilot-model-select:hover { color: var(--text-muted); border-bottom-color: var(--background-modifier-border); }
+.vilot-model-select:focus { border-bottom-color: var(--interactive-accent); outline: none; color: var(--text-normal); }
+
+.vilot-header-btn {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--text-faint);
+	padding: 3px;
+	border-radius: var(--radius-s);
+	transition: color 0.25s ease;
+}
+.vilot-header-btn:hover { color: var(--text-normal); }
+
+/* ── Messages ─────────────────────────────────── */
+
+.vilot-chat-messages {
+	flex: 1;
+	overflow-y: auto;
+	padding: 24px 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	-webkit-user-select: text;
+	user-select: text;
+}
+
+/* Welcome — atmospheric, confident */
+
+.vilot-chat-welcome {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	padding: 80px 24px 60px;
+	flex: 1;
+	gap: 12px;
+}
+
+.vilot-chat-welcome h3 {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 700;
+	color: var(--text-normal);
+	letter-spacing: -0.03em;
+	opacity: 0.18;
+}
+
+.vilot-chat-welcome p {
+	margin: 0;
+	max-width: 220px;
+	font-size: 12px;
+	line-height: 1.7;
+	color: var(--text-faint);
+}
+
+/* ── Message layout — user right, assistant left */
+
+.vilot-chat-msg {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	max-width: 90%;
+	animation: vilot-msg-in 0.3s ease both;
+}
+
+@keyframes vilot-msg-in {
+	from { opacity: 0; transform: translateY(6px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+.vilot-chat-msg-user {
+	align-self: flex-end;
+	align-items: flex-end;
+}
+
+.vilot-chat-msg-assistant {
+	align-self: flex-start;
+	align-items: flex-start;
+}
+
+.vilot-chat-msg-role {
+	font-size: 9px;
+	font-weight: 600;
+	color: var(--text-faint);
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	padding: 0 2px;
+	opacity: 0.7;
+}
+
+.vilot-chat-msg-context-hint {
+	font-weight: 400;
+	text-transform: none;
+	letter-spacing: normal;
+	opacity: 0.5;
+}
+
+/* User bubble — accent with asymmetric radius */
+
+.vilot-chat-msg-user .vilot-chat-msg-content {
+	white-space: pre-wrap;
+	padding: 9px 14px;
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border-radius: 14px 14px 4px 14px;
+	font-size: 13px;
+	line-height: 1.55;
+}
+
+/* Assistant — clean typography, no background */
+
+.vilot-chat-msg-assistant .vilot-chat-msg-content {
+	font-size: 13px;
+	line-height: 1.7;
+	color: var(--text-normal);
+	max-width: 100%;
+}
+
+/* Markdown refinements */
+.vilot-chat-msg-assistant .vilot-chat-msg-content p { margin: 0 0 10px 0; }
+.vilot-chat-msg-assistant .vilot-chat-msg-content p:last-child { margin-bottom: 0; }
+
+/* Remove Obsidian-injected copy controls inside rendered message content. */
+.vilot-chat-msg-content button.copy-code,
+.vilot-chat-msg-content .copy-code-button,
+.vilot-chat-msg-content .code-block-flair {
+	display: none !important;
+}
+
+/* Also suppress auto-injected copy controls anywhere inside a chat bubble (tool panels included). */
+.vilot-chat-msg button.copy-code,
+.vilot-chat-msg .copy-code-button,
+.vilot-chat-msg .code-block-flair {
+	display: none !important;
+}
+
+.vilot-chat-msg-assistant .vilot-chat-msg-content pre {
+	margin: 10px 0;
+	padding: 10px 12px;
+	background: var(--background-secondary);
+	border-radius: 6px;
+	overflow-x: auto;
+	border: none;
+	font-size: 12px;
+}
+
+.vilot-chat-msg-assistant .vilot-chat-msg-content code {
+	font-size: 12px;
+	background: var(--background-secondary);
+	padding: 1px 4px;
+	border-radius: 3px;
+}
+
+.vilot-chat-msg-assistant .vilot-chat-msg-content pre code {
+	background: none;
+	padding: 0;
+}
+
+.vilot-chat-msg-assistant .vilot-chat-msg-content ul,
+.vilot-chat-msg-assistant .vilot-chat-msg-content ol {
+	margin: 6px 0;
+	padding-left: 18px;
+}
+
+/* Action buttons — appear on hover, ultra-quiet */
+
+.vilot-chat-msg-actions {
+	display: flex;
+	gap: 2px;
+	margin-top: 1px;
+	opacity: 0;
+	transition: opacity 0.25s ease;
+}
+
+.vilot-chat-msg-user .vilot-chat-msg-actions { justify-content: flex-end; }
+.vilot-chat-msg:hover .vilot-chat-msg-actions { opacity: 1; }
+
+.vilot-chat-action-btn {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--text-faint);
+	padding: 2px;
+	border-radius: var(--radius-s);
+	transition: color 0.2s ease;
+	opacity: 0.6;
+}
+.vilot-chat-action-btn:hover { color: var(--text-muted); opacity: 1; }
+
+/* ── Thinking indicator — alive ───────────────── */
+
+.vilot-loading {
+	color: var(--text-faint);
+	font-size: 12px;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.vilot-loading::before {
+	content: '';
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--interactive-accent);
+	animation: vilot-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes vilot-pulse {
+	0%, 100% { opacity: 0.3; transform: scale(0.85); }
+	50% { opacity: 1; transform: scale(1); }
+}
+
+/* Error */
+
+.vilot-chat-error {
+	color: var(--text-error);
+	font-size: 12px;
+	padding: 6px 0;
+}
+
+.vilot-error { color: var(--text-error); }
+
+/* ── Input area — integrated, borderless feel ─── */
+
+.vilot-chat-input-area {
+	position: relative;
+	border-top: 1px solid var(--background-modifier-border);
+	padding: 10px 14px;
+	flex-shrink: 0;
+}
+
+.vilot-chat-input {
+	width: 100%;
+	min-height: 48px;
+	max-height: 140px;
+	resize: none;
+	font-family: var(--font-interface);
+	font-size: 13px;
+	line-height: 1.5;
+	margin-bottom: 6px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 10px;
+	padding: 10px 12px;
+	background: var(--background-primary);
+	color: var(--text-normal);
+	transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.vilot-chat-input:focus {
+	border-color: var(--interactive-accent);
+	box-shadow: 0 0 0 2px color-mix(in srgb, var(--interactive-accent) 15%, transparent);
+	outline: none;
+}
+.vilot-chat-input:disabled { opacity: 0.4; }
+
+.vilot-chat-btn-row {
+	display: flex;
+	justify-content: flex-end;
+	gap: 6px;
+	align-items: center;
+}
+
+.vilot-chat-send-btn {
+	font-size: 12px;
+	padding: 5px 16px;
+	font-weight: 500;
+	border-radius: 8px;
+	letter-spacing: 0.01em;
+}
+
+.vilot-chat-cancel-btn {
+	font-size: 12px;
+	padding: 5px 12px;
+	background: none;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 8px;
+	color: var(--text-muted);
+	cursor: pointer;
+	transition: opacity 0.2s ease, color 0.2s ease;
+}
+.vilot-chat-cancel-btn:hover { color: var(--text-normal); }
+.vilot-chat-cancel-btn.vilot-hidden { opacity: 0; pointer-events: none; }
+
+/* ── @mention ─────────────────────────────────── */
+
+.vilot-mention {
+	color: var(--interactive-accent);
+	font-weight: 600;
+}
+
+.vilot-chat-msg-user .vilot-mention {
+	color: var(--text-on-accent);
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+
+/* Note path links in assistant messages */
+
+.vilot-note-link {
+	color: var(--interactive-accent);
+	cursor: pointer;
+	text-decoration: none;
+	font-family: var(--font-monospace);
+	font-size: 12px;
+	border-bottom: 1px solid transparent;
+	transition: border-color 0.2s ease;
+}
+.vilot-note-link:hover {
+	border-bottom-color: var(--interactive-accent);
+}
+
+/* ── Tool Use — timeline-style ────────────────── */
+
+.vilot-tool-use-list {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	margin-bottom: 10px;
+	padding-left: 10px;
+	border-left: 2px solid var(--background-modifier-border);
+}
+.vilot-tool-use-list:empty { display: none; }
+
+.vilot-tool-group {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.vilot-tool-group-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: none;
+	border: none;
+	padding: 2px 0;
+	cursor: pointer;
+	font-size: 11px;
+	color: var(--text-faint);
+}
+.vilot-tool-group-toggle:hover { color: var(--text-muted); }
+
+.vilot-tool-group-icon {
+	display: inline-flex;
+	align-items: center;
+	color: var(--text-faint);
+}
+.vilot-tool-group-icon svg { width: 11px; height: 11px; }
+
+.vilot-tool-group-details {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.vilot-tool-icon {
+	display: inline-flex;
+	align-items: center;
+	color: var(--text-faint);
+	flex-shrink: 0;
+}
+.vilot-tool-icon svg { width: 11px; height: 11px; }
+
+.vilot-tool-use-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 11px;
+	color: var(--text-faint);
+	background: none;
+	border: none;
+	padding: 2px 0;
+	cursor: pointer;
+	transition: color 0.2s ease;
+}
+.vilot-tool-use-toggle:hover { color: var(--text-muted); }
+
+.vilot-tool-use-details { margin-top: 3px; }
+.vilot-tool-use-meta {
+	font-size: 11px;
+	color: var(--text-faint);
+	margin-bottom: 3px;
+}
+.vilot-tool-use-result {
+	font-size: 11px;
+	color: var(--text-muted);
+	margin-bottom: 4px;
+	white-space: normal;
+}
+
+.vilot-tool-use-args {
+	font-size: 11px;
+	padding: 5px 8px;
+	background: var(--background-secondary);
+	border-radius: 4px;
+	overflow-x: auto;
+	margin: 0;
+	color: var(--text-faint);
+	font-family: var(--font-monospace);
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+/* Prevent Obsidian copy-code controls inside tool details. */
+.vilot-tool-use-list button.copy-code,
+.vilot-tool-use-list .copy-code-button,
+.vilot-tool-use-list .code-block-flair {
+	display: none !important;
+}
+
+/* Tool completion — color the icon */
+.vilot-tool-complete-success .vilot-tool-use-toggle { color: var(--text-muted); }
+.vilot-tool-complete-success .vilot-tool-icon { color: var(--color-green); }
+.vilot-tool-complete-failure .vilot-tool-use-toggle { color: var(--text-muted); }
+.vilot-tool-complete-failure .vilot-tool-icon { color: var(--color-red); }
+.vilot-tool-running .vilot-tool-icon {
+	animation: vilot-spin 0.9s linear infinite;
+	color: var(--interactive-accent);
+}
+
+@keyframes vilot-spin {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
+}
+
+.vilot-code-apply-btn {
+	margin: 0 0 4px;
+	font-size: 11px;
+	padding: 3px 8px;
+	border-radius: 6px;
+	border: 1px solid var(--background-modifier-border);
+	background: var(--background-primary);
+	color: var(--text-muted);
+	cursor: pointer;
+}
+.vilot-code-apply-btn:hover {
+	color: var(--text-normal);
+	border-color: var(--interactive-accent);
+}
+
+.vilot-composer-section {
+	margin-top: 14px;
+	padding-top: 10px;
+	border-top: 1px solid var(--background-modifier-border);
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.vilot-composer-title {
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--text-faint);
+}
+
+.vilot-composer-card {
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 8px;
+	background: var(--background-secondary);
+	padding: 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.vilot-composer-card.is-accepted {
+	border-color: color-mix(in srgb, var(--color-green) 55%, var(--background-modifier-border));
+}
+.vilot-composer-card.is-rejected {
+	border-color: color-mix(in srgb, var(--color-red) 55%, var(--background-modifier-border));
+	opacity: 0.82;
+}
+
+.vilot-composer-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+.vilot-composer-path {
+	background: none;
+	border: none;
+	padding: 0;
+	font-family: var(--font-monospace);
+	font-size: 11px;
+	color: var(--interactive-accent);
+	cursor: pointer;
+}
+.vilot-composer-path:hover { text-decoration: underline; }
+
+.vilot-composer-description {
+	font-size: 11px;
+	color: var(--text-faint);
+}
+
+.vilot-composer-diff {
+	max-height: 220px;
+	overflow: auto;
+	border-radius: 6px;
+	background: var(--background-primary);
+	font-family: var(--font-monospace);
+	font-size: 11px;
+}
+
+.vilot-composer-line {
+	display: flex;
+	white-space: pre;
+	line-height: 1.5;
+}
+.vilot-composer-marker {
+	width: 16px;
+	text-align: center;
+	opacity: 0.75;
+	user-select: none;
+}
+.vilot-composer-text {
+	flex: 1;
+	padding-right: 8px;
+}
+.vilot-composer-line-added { background: color-mix(in srgb, var(--color-green) 12%, transparent); }
+.vilot-composer-line-added .vilot-composer-marker { color: var(--color-green); }
+.vilot-composer-line-removed { background: color-mix(in srgb, var(--color-red) 12%, transparent); }
+.vilot-composer-line-removed .vilot-composer-marker { color: var(--color-red); }
+
+.vilot-composer-truncated {
+	font-size: 11px;
+	color: var(--text-faint);
+	padding: 4px 8px;
+}
+
+.vilot-composer-actions {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+}
+.vilot-composer-status {
+	margin-right: auto;
+	font-size: 11px;
+	color: var(--text-faint);
+}
+
+.vilot-composer-footer {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+/* ── Setup Wizard ─────────────────────────────── */
+
+.vilot-setup-modal .modal-content {
+	max-width: 680px;
+}
+
+.vilot-setup-subtitle {
+	margin-top: -6px;
+	color: var(--text-faint);
+	font-size: 13px;
+}
+
+.vilot-setup-progress {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 10px;
+	margin: 14px 0 18px;
+}
+
+.vilot-setup-progress-item {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 11px;
+	color: var(--text-faint);
+	padding: 6px 8px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 6px;
+}
+.vilot-setup-progress-item.is-active {
+	color: var(--text-normal);
+	border-color: var(--interactive-accent);
+}
+.vilot-setup-progress-item.is-complete {
+	color: var(--text-muted);
+	border-color: color-mix(in srgb, var(--color-green) 40%, var(--background-modifier-border));
+}
+
+.vilot-setup-progress-icon {
+	display: inline-flex;
+}
+.vilot-setup-progress-label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.vilot-setup-step {
+	padding: 12px 0 4px;
+}
+
+.vilot-setup-step h3 {
+	margin: 0 0 8px;
+	font-size: 16px;
+}
+
+.vilot-setup-step-desc {
+	margin: 0 0 10px;
+	color: var(--text-faint);
+	font-size: 13px;
+}
+
+.vilot-setup-status {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 12px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 8px;
+	background: var(--background-secondary);
+	margin-bottom: 10px;
+}
+
+.vilot-setup-status-icon {
+	display: inline-flex;
+	color: var(--text-faint);
+}
+.vilot-setup-status.is-success .vilot-setup-status-icon { color: var(--color-green); }
+.vilot-setup-status.is-failure .vilot-setup-status-icon { color: var(--color-red); }
+.vilot-setup-status.is-running .vilot-setup-status-icon {
+	color: var(--interactive-accent);
+	animation: vilot-spin 0.9s linear infinite;
+}
+
+.vilot-setup-status-text {
+	font-size: 13px;
+	color: var(--text-normal);
+}
+
+.vilot-setup-help {
+	padding: 8px 10px;
+	background: var(--background-secondary);
+	border-radius: 6px;
+	font-size: 12px;
+	color: var(--text-muted);
+	margin: 0 0 10px;
+}
+
+.vilot-setup-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	padding-top: 2px;
+}
+
+/* ── Ask Modal ────────────────────────────────── */
+
+.vilot-ask-modal { max-width: 560px; }
+
+.vilot-context-label {
+	color: var(--text-faint);
+	font-size: 11px;
+	margin-bottom: 10px;
+}
+
+.vilot-input {
+	width: 100%;
+	min-height: 80px;
+	resize: vertical;
+	font-family: var(--font-interface);
+	margin-bottom: 10px;
+}
+
+.vilot-response { margin-top: 16px; }
+
+.vilot-response-text {
+	padding: 14px;
+	background: var(--background-secondary);
+	border-radius: 8px;
+	font-size: 13px;
+	line-height: 1.65;
+	max-height: 400px;
+	overflow-y: auto;
+}
+
+/* ── Diff Modal ───────────────────────────────── */
+
+.vilot-diff-modal { max-width: 95vw; width: 95vw; }
+
+.vilot-diff-modal .modal-content {
+	display: flex;
+	flex-direction: column;
+	max-height: 80vh;
+	overflow: hidden;
+}
+
+/* Header */
+
+.vilot-diff-header {
+	flex-shrink: 0;
+	margin-bottom: 12px;
+}
+
+.vilot-diff-title {
+	margin: 0 0 4px;
+	font-size: 16px;
+	font-weight: 600;
+	letter-spacing: -0.01em;
+}
+
+.vilot-diff-file-path {
+	display: inline-block;
+	font-size: 12px;
+	font-family: var(--font-monospace);
+	color: var(--text-faint);
+	background: var(--background-secondary);
+	padding: 2px 8px;
+	border-radius: 4px;
+}
+
+.vilot-diff-stats {
+	display: inline-flex;
+	gap: 8px;
+	margin-left: 10px;
+	font-size: 12px;
+	font-family: var(--font-monospace);
+	font-weight: 600;
+}
+
+.vilot-diff-stat-added { color: var(--color-green); }
+.vilot-diff-stat-removed { color: var(--color-red); }
+
+/* Diff content */
+
+.vilot-diff-container {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+	background: var(--background-secondary);
+	border-radius: 8px;
+	font-family: var(--font-monospace);
+	font-size: 12px;
+	line-height: 1.6;
+	margin-bottom: 12px;
+}
+
+.vilot-diff-line {
+	display: flex;
+	white-space: pre;
+	padding: 0 12px 0 0;
+	min-height: 1.6em;
+	border-left: 3px solid transparent;
+}
+
+.vilot-diff-gutter {
+	color: var(--text-faint);
+	min-width: 40px;
+	text-align: right;
+	padding-right: 8px;
+	user-select: none;
+	flex-shrink: 0;
+	font-variant-numeric: tabular-nums;
+	opacity: 0.5;
+}
+
+.vilot-diff-marker {
+	min-width: 20px;
+	text-align: center;
+	user-select: none;
+	flex-shrink: 0;
+	font-weight: 600;
+}
+
+.vilot-diff-text {
+	flex: 1;
+	min-width: 0;
+	overflow-x: auto;
+}
+
+.vilot-diff-unchanged {
+	background: transparent;
+}
+
+.vilot-diff-added {
+	background: color-mix(in srgb, var(--color-green) 12%, transparent);
+	border-left-color: var(--color-green);
+}
+.vilot-diff-added .vilot-diff-marker { color: var(--color-green); }
+.vilot-diff-added .vilot-diff-gutter { opacity: 0.8; }
+
+.vilot-diff-removed {
+	background: color-mix(in srgb, var(--color-red) 12%, transparent);
+	border-left-color: var(--color-red);
+}
+.vilot-diff-removed .vilot-diff-marker { color: var(--color-red); }
+.vilot-diff-removed .vilot-diff-gutter { opacity: 0.8; }
+
+/* Buttons */
+
+.vilot-diff-btn-row {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	flex-shrink: 0;
+	padding-top: 12px;
+}
+
+.vilot-diff-reject-btn {
+	padding: 7px 20px;
+	background: none;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 8px;
+	color: var(--text-muted);
+	cursor: pointer;
+	font-size: 13px;
+	transition: color 0.2s ease, border-color 0.2s ease;
+}
+.vilot-diff-reject-btn:hover {
+	color: var(--text-normal);
+	border-color: var(--text-muted);
+}
+
+.vilot-diff-accept-btn {
+	padding: 7px 20px;
+	border-radius: 8px;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+/* ── New Note Modal ───────────────────────────── */
+
+.vilot-new-note-modal { max-width: 560px; }
+.vilot-new-note-prompt { width: 100%; }
+
+.vilot-new-note-status {
+	margin-top: 8px;
+	font-size: 11px;
+	color: var(--text-faint);
+}
+
+/* ── Autocomplete ─────────────────────────────── */
+
+.vilot-autocomplete {
+	position: absolute;
+	bottom: 100%;
+	left: 0;
+	right: 0;
+	max-height: 200px;
+	overflow-y: auto;
+	background: var(--background-primary);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 8px;
+	box-shadow: 0 -4px 16px color-mix(in srgb, var(--text-normal) 14%, transparent);
+	z-index: var(--layer-popover);
+	margin-bottom: 4px;
+}
+
+.vilot-autocomplete-item {
+	padding: 7px 14px;
+	font-size: 13px;
+	cursor: pointer;
+	color: var(--text-normal);
+	transition: background 0.15s ease;
+}
+
+.vilot-autocomplete-item:hover,
+.vilot-autocomplete-item.is-selected {
+	background: var(--background-modifier-hover);
+}
+
+/* ── Settings tabs ─────────────────────────────── */
+
+.vilot-settings-nav {
+	display: flex;
+	gap: 0;
+	border-bottom: 1px solid var(--background-modifier-border);
+	margin-bottom: 16px;
+}
+
+.vilot-settings-tab {
+	background: none;
+	border: none;
+	border-bottom: 2px solid transparent;
+	padding: 8px 16px;
+	font-size: 13px;
+	color: var(--text-muted);
+	cursor: pointer;
+	transition: color 0.2s ease, border-color 0.2s ease;
+}
+.vilot-settings-tab:hover { color: var(--text-normal); }
+.vilot-settings-tab.is-active {
+	color: var(--text-normal);
+	border-bottom-color: var(--interactive-accent);
+}
+
+.vilot-settings-desc {
+	color: var(--text-faint);
+	font-size: 12px;
+	margin: 0 0 12px;
+}
+
+.vilot-model-grid {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+.vilot-model-setting {
+	padding: 4px 0 !important;
+	border-bottom: none !important;
+}
+
+.vilot-model-setting .setting-item-info { flex: 1; }
+.vilot-model-setting .setting-item-name { font-size: 13px; }
+
+/* ── Extensions tab ───────────────────────────── */
+
+.vilot-ext-heading { margin-top: 20px; }
+
+.vilot-json-editor {
+	width: 100%;
+	font-family: var(--font-monospace);
+	font-size: 12px;
+	line-height: 1.5;
+	padding: 10px 12px;
+	background: var(--background-secondary);
+	color: var(--text-normal);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 6px;
+	resize: vertical;
+	tab-size: 2;
+	margin-bottom: 4px;
+}
+.vilot-json-editor:focus {
+	border-color: var(--interactive-accent);
+	outline: none;
+}
+
+.vilot-mcp-status {
+	font-size: 12px;
+	min-height: 18px;
+	margin-bottom: 8px;
+}
+
+/* ── Conversation history modal ────────────────── */
+
+.vilot-history-list {
+	max-height: 400px;
+	overflow-y: auto;
+	margin-top: 8px;
+}
+
+.vilot-history-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 10px;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background 0.15s ease;
+}
+.vilot-history-item:hover { background: var(--background-modifier-hover); }
+
+.vilot-history-name {
+	font-size: 13px;
+	color: var(--text-normal);
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.vilot-history-date {
+	font-size: 11px;
+	color: var(--text-faint);
+	flex-shrink: 0;
+	margin-left: 12px;
+}
+
+/* ── Focus-visible ────────────────────────────── */
+
+.vilot-header-btn:focus-visible,
+.vilot-chat-action-btn:focus-visible,
+.vilot-tool-use-toggle:focus-visible,
+.vilot-diff-reject-btn:focus-visible,
+.vilot-diff-accept-btn:focus-visible,
+.vilot-chat-send-btn:focus-visible,
+.vilot-chat-cancel-btn:focus-visible,
+.vilot-autocomplete-item:focus-visible {
+	outline: 2px solid var(--interactive-accent);
+	outline-offset: 1px;
+}
+
+/* ── Reduced motion ───────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+	.vilot-chat-msg { animation: none; }
+	.vilot-loading::before { animation: none; opacity: 0.6; }
+}
